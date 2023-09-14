@@ -1,10 +1,11 @@
 import json
-
 import quart
 import quart_cors
 from quart import request
 import requests
-import urllib.parse
+import os
+import httpx
+
 API_KEY = "AIzaSyBBqPWmXUkgnessbwHyAueFBPa6UDBMPRo"
 CX = "4299ecf0db6824aae"
 a=API_KEY
@@ -71,8 +72,10 @@ async def openapi_spec():
         text = f.read()
         return quart.Response(text, mimetype="text/yaml")
 
+port = int(os.environ.get("PORT", 5000))
+
 def main():
-    app.run(debug=True, host="0.0.0.0", port=5003)
+    app.run(debug=True, host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
     main()
