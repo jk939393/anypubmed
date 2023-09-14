@@ -1,9 +1,9 @@
 {
     "schema_version": "v1",
-    "name_for_human": "TODO List (no auth)",
-    "name_for_model": "todo",
-    "description_for_human": "Manage your TODO list. You can add, remove and view your TODOs.",
-    "description_for_model": "Plugin for managing a TODO list, you can add, remove and view your TODOs.",
+    "name_for_human": "AnyPubMed Search",
+    "name_for_model": "AnyPubMed Search",
+    "description_for_human": "The most powerful PubMed search tool, powered by Google Custom Search. Find research articles swiftly and easily.",
+    "description_for_model": "A potent application leveraging Google Custom Search for the most comprehensive PubMed research articles search experience.",
     "auth": {
       "type": "none"
     },
@@ -11,8 +11,8 @@
       "type": "openapi",
       "url": "https://anypubmed.anygpt.ai"
     },
-    "logo_url": "http://localhost:5003/logo.png",
-    "contact_email": "legal@example.com",
+    "logo_url": "https://github.com/jk939393/anypubmed/blob/prod/logo.png",
+    "contact_email": "researchbutler@anygpt.ai",
     "legal_info_url": "http://example.com/legal"
   }
   

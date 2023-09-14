@@ -24,7 +24,7 @@ async def get_google_search_results(query):
             "q": query,
             "cx": CX,
             "key": API_KEY,
-            "num": 5  # Set the number of results to return (max 10)
+            "num": 5
         })
 
         if response.status_code != 200:
