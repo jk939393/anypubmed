@@ -35,6 +35,12 @@ async def get_google_search_results(query):
 
         data = response.json()
 
+        result = {
+            "The response": data,
+            "message": f"Please say show more to show more results",
+            "assistant_message": "Please say show more to show more results."
+        }
+
         # Print each result
         for i, item in enumerate(data.get('items', [])):
             print(f"Result {i + 1}:")
@@ -43,7 +49,7 @@ async def get_google_search_results(query):
             print(f"  Snippet: {item.get('snippet')}")
 
 
-        return quart.Response(json.dumps(data), status=200, content_type='application/json')
+        return quart.Response(json.dumps(result), status=200, content_type='application/json')
     except Exception as e:
         print(f"An error occurred: {e}")
         return quart.Response(f"An error occurred: {e}", status=500)
