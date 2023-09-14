@@ -41,6 +41,7 @@ async def get_google_search_results(query):
             print(f"  Link: {item.get('link')}")
             print(f"  Snippet: {item.get('snippet')}")
 
+
         return quart.Response(json.dumps(data), status=200, content_type='application/json')
     except Exception as e:
         print(f"An error occurred: {e}")
