@@ -1,0 +1,31 @@
+AnyPubMed Plugin Disclaimer
+Last updated: September 14, 2023
+
+Please read this Disclaimer carefully before using the AnyPubMed ("the Plugin") operated by AnyPubMed ("us," "we," "our").
+
+Introduction
+The information provided by AnyPubMed ("we," "us," or "our") on AnyPubMed (the "Plugin") is for general informational purposes only. All information on the Plugin is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the Plugin.
+
+No Liability
+Under no circumstance shall we have any liability to you for any loss or damage of any kind incurred as a result of the use of the Plugin or reliance on any information provided on the Plugin. Your use of the Plugin and your reliance on any information on the Plugin is solely at your own risk.
+
+External Links Disclaimer
+The Plugin may contain (or you may be sent through the Plugin) links to other websites or content belonging to or originating from third parties or links to websites and features in banners or other advertising. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us.
+
+Errors and Omissions Disclaimer
+While we have made every attempt to ensure that the information contained in this Plugin has been obtained from reliable sources, AnyPubMed is not responsible for any errors or omissions, or for the results obtained from the use of this information.
+
+Fair Use Disclaimer
+This Plugin may use copyrighted material that has not always been specifically authorized by the copyright owner. It is being made available for the general purpose of criticism, comment, news reporting, teaching, scholarship, or research. We believe this constitutes a 'fair use' of any such copyrighted material.
+
+Views Expressed Disclaimer
+Any views and opinions that may be expressed in the Plugin are the views and opinions of the author and do not necessarily reflect those of AnyPubMed.
+
+No Endorsement Disclaimer
+References in the Plugin to any specific commercial product, process, or service, or the use of any trade, firm, or corporation name are for the information and convenience of the Plugin's users and do not constitute endorsement, recommendation, or favoring by AnyPubMed.
+
+Contact Us
+For any questions about this Disclaimer, please contact us at researchbutler@anygpt.ai
+
+Consent
+By using our Plugin, you hereby consent to our Disclaimer and agree to its terms.
