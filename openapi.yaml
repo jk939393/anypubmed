@@ -1,0 +1,32 @@
+openapi: 3.0.1
+info:
+  title: Google Custom Search Plugin
+  description: A plugin that allows the user to perform Google custom searches.
+  version: 'v1'
+servers:
+  - url: http://localhost:5003
+paths:
+  /google_search/{query}:
+    get:
+      operationId: get_google_search_results
+      summary: Get Google Custom Search results
+      description: Retrieves search results from Google Custom Search based on the query parameter.
+      parameters:
+        - in: path
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The search query to use when fetching results from Google Custom Search.
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                description: The search results in JSON format.
+
+        '500':
+          description: Server error, e.g., the server encountered a situation it doesn't know how to handle, such as an unexpected exception.
+
