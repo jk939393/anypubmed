@@ -4,7 +4,7 @@ info:
   description: A plugin that allows the user to perform Google custom searches.
   version: 'v1'
 servers:
-  - url: http://anypubmed.anygpt.ai
+  - url: https://anypubmed.anygpt.ai
 paths:
   /google_search/{query}:
     get:
