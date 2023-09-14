@@ -14,18 +14,17 @@ BASE_URL = "https://www.googleapis.com/customsearch/v1"
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
 #pubmed
-
-
 @app.route("/google_search/<string:query>", methods=['GET'])
 async def get_google_search_results(query):
     try:
-        query = urllib.parse.quote(query)
-        print(f"Encoded query: {query}")
+        # query = urllib.parse.quote(query)  # Remove this line
+        print(f"Query: {query}")
 
         response = requests.get(BASE_URL, params={
             "q": query,
             "cx": CX,
-            "key": API_KEY
+            "key": API_KEY,
+            "num": 10  # Set the number of results to return (max 10)
         })
 
         if response.status_code != 200:
@@ -34,10 +33,44 @@ async def get_google_search_results(query):
             return quart.Response(response.text, status=response.status_code)
 
         data = response.json()
+
+        # Print each result
+        for i, item in enumerate(data.get('items', [])):
+            print(f"Result {i + 1}:")
+            print(f"  Title: {item.get('title')}")
+            print(f"  Link: {item.get('link')}")
+            print(f"  Snippet: {item.get('snippet')}")
+
         return quart.Response(json.dumps(data), status=200, content_type='application/json')
     except Exception as e:
         print(f"An error occurred: {e}")
         return quart.Response(f"An error occurred: {e}", status=500)
+
+
+# @app.route("/google_search/<string:query>", methods=['GET'])
+# async def get_google_search_results(query):
+#     try:
+#         query = urllib.parse.quote(query)
+#         print(f"Encoded query: {query}")
+#
+#         response = requests.get(BASE_URL, params={
+#             "q": query,
+#             "cx": CX,
+#             "key": API_KEY,
+#             "num": 10  # Set the number of results to return
+#
+#         })
+#
+#         if response.status_code != 200:
+#             print(f"Unexpected status code from Google: {response.status_code}")
+#             print(f"Response content: {response.text}")
+#             return quart.Response(response.text, status=response.status_code)
+#
+#         data = response.json()
+#         return quart.Response(json.dumps(data), status=200, content_type='application/json')
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return quart.Response(f"An error occurred: {e}", status=500)
 
 
 

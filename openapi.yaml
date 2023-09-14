@@ -18,6 +18,14 @@ paths:
             type: string
           required: true
           description: The search query to use when fetching results from Google Custom Search.
+        - in: query
+          name: num
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+          required: false
+          description: The number of results to return (between 1 and 10).
       responses:
         '200':
           description: Search results retrieved successfully
@@ -26,7 +34,7 @@ paths:
               schema:
                 type: object
                 description: The search results in JSON format.
-
+        '400':
+          description: Bad request, e.g., malformed request syntax, invalid request message framing, or deceptive request routing.
         '500':
           description: Server error, e.g., the server encountered a situation it doesn't know how to handle, such as an unexpected exception.
-
