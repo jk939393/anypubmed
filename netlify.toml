@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "/scholar/*"
+  to = "https://anypubmed-2eb75be592db.herokuapp.com/google_search/:splat"
+  status = 200
+
+
+[[headers]]
+  for = "/*.yaml"
+  [headers.values]
+    Content-Type = "text/yaml"
