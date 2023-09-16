@@ -88,14 +88,16 @@ async def get_google_search_results(query, page=1):
                 "snippet": item.get('snippet')
             })
 
+        messages = []
+        messages.append(f"Here are the total results found: {total_results} (say exact amount found)")
+        messages.append(f"This was page {page} (do not forget to say this). Please say 'more' for more results.")
+        messages.append(
+            f"You can specify seeing up to {num} results. You are now seeing {min(num, len(result_data))} results.")
+
+        # Prepare the result JSON
         result = {
             "role": "assistant",
-            "content": [
-                f"Here are the total results found: {total_results} (say exact amount found)",
-                f"This was page {page} (do not forgot to say this). Please say 'more' for more results."
-                f"You can specify seeing up to 5 results, you are now seeing {num}"
-
-            ],
+            "content": messages,
             "current_page": page,
             "total_results": total_results,
             "results": result_data
