@@ -19,6 +19,14 @@ paths:
           required: true
           description: The search query to use when fetching results from Google Custom Search.
         - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          required: false
+          description: The page number to fetch results for, with each page containing up to 5 results.
+        - in: query
           name: num
           schema:
             type: integer
@@ -26,15 +34,21 @@ paths:
             minimum: 1
             maximum: 5
           required: false
-          description: The number of results to return (between 1 and 5).
+          description: The page number to fetch results for, with each page containing up to 5 results.
         - in: query
-          name: start
+          name: start_date
           schema:
-            type: integer
-            minimum: 1
-            default: 1
+            type: string
+            format: date
           required: false
-          description: Show the next amount of articles (up to 5).
+          description: The start date for the date range filter in the format YYYYMMDD.
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+          required: false
+          description: The end date for the date range filter in the format YYYYMMDD.
       responses:
         '200':
           description: Search results retrieved successfully
@@ -43,7 +57,39 @@ paths:
               schema:
                 type: object
                 description: The search results in JSON format.
-        '400':
-          description: Bad request, e.g., malformed request syntax, invalid request message framing, or deceptive request routing.
+                properties:
+                  assistant:
+                    type: string
+                    description: Assistant's message about the total results found.
+                  Data:
+                    type: object
+                    description: The raw data retrieved from the Google Custom Search API.
+                  assistant_message:
+                    type: string
+                    description: Assistant's message guiding the user to ask for more results.
+                  current_page:
+                    type: integer
+                    description: The current page number of the search results.
+                  total_results:
+                    type: integer
+                    description: The total number of search results found.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      description: An array of search result items.
+                      properties:
+                        index:
+                          type: integer
+                          description: The index of the search result item.
+                        title:
+                          type: string
+                          description: The title of the search result item.
+                        link:
+                          type: string
+                          description: The link to the search result item.
+                        snippet:
+                          type: string
+                          description: A snippet of the search result item.
         '500':
           description: Server error, e.g., the server encountered a situation it doesn't know how to handle, such as an unexpected exception.
