@@ -1,7 +1,7 @@
 {
     "schema_version": "v1",
-    "name_for_human": "AnyPubMed Search",
-    "name_for_model": "AnyPubMedSearch",
+    "name_for_human": "PubMed Research",
+    "name_for_model": "PubMedResearch",
     "description_for_human": "The most powerful PubMed search tool, powered by Google Custom Search. Find research articles swiftly and easily.",
     "description_for_model": "A potent application leveraging Google Custom Search for the most comprehensive PubMed research articles search experience.",
     "auth": {
