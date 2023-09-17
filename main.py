@@ -1,7 +1,7 @@
 import json
 import quart
 import quart_cors
-from quart import request
+from quart import Quart, request, Response, send_file
 import requests
 import os
 import re
@@ -111,19 +111,39 @@ async def get_google_search_results(query, page=1):
 
 
 
+@app.route("/.well-known/ai-plugin.json", methods=['GET'])
+async def plugin_manifest():
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get("https://anychart.anygpt.ai/.well-known/ai-plugin.json")
+        print(f"Request headers: {request.headers}")
+        print(f"Current working directory: {os.getcwd()}")
 
+        print(f"Received response: {response.text}")  # Print the response
+
+        if response.status_code == 200:
+            json_data = response.text  # Get the JSON as a string
+            return Response(json_data, mimetype="application/json")
+        else:
+            return f"Failed to fetch data. Status code: {response.status_code}", 400
+    except Exception as e:
+        print(f"An error occurred: {e}")  # Print the exception
+        return str(e), 500
 
 @app.get("/logo.png")
 async def plugin_logo():
     filename = 'logo.png'
     return await quart.send_file(filename, mimetype='image/png')
 
-@app.get("/.well-known/ai-plugin.json")
-async def plugin_manifest():
-    host = request.headers['Host']
-    with open("./.well-known/ai-plugin.json") as f:
-        text = f.read()
-        return quart.Response(text, mimetype="text/json")
+
+
+
+# @app.get("/.well-known/ai-plugin.json")
+# async def plugin_manifest():
+#     host = request.headers['Host']
+#     with open("./.well-known/ai-plugin.json") as f:
+#         text = f.read()
+#         return quart.Response(text, mimetype="text/json")
 
 @app.get("/openapi.yaml")
 async def openapi_spec():
