@@ -115,7 +115,7 @@ async def get_google_search_results(query, page=1):
 async def plugin_manifest():
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.get("https://anychart.anygpt.ai/.well-known/ai-plugin.json")
+            response = await client.get("https://anypubmed.anygpt.ai/.well-known/ai-plugin.json")
         print(f"Request headers: {request.headers}")
         print(f"Current working directory: {os.getcwd()}")
 
