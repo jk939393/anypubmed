@@ -12,7 +12,7 @@ API_KEY = "AIzaSyBBqPWmXUkgnessbwHyAueFBPa6UDBMPRo"
 CX = "4299ecf0db6824aae"
 a=API_KEY
 b= CX
-BASE_URL = "https://www.googleapis.com/customsearch/v1"
+BASE_URL = "https://www.googleapis.com/customsearch/v1/siterestrict"
 
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
