@@ -2,7 +2,10 @@
   from = "/google_search/*"
   to = "https://anypubmed-2eb75be592db.herokuapp.com/google_search/:splat"
   status = 200
-
+[[redirects]]
+  from = "/.well-known/*"
+  to = "https://anypubmed-2eb75be592db.herokuapp.com/.well-known/:splat"
+  status = 200
 
 [[headers]]
   for = "/*.yaml"
