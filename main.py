@@ -8,7 +8,7 @@ import re
 from datetime import datetime
 import httpx
 
-API_KEY = "AIzaSyBBqPWmXUkgnessbwHyAueFBPa6UDBMPRo"
+API_KEY = "AIzaSyB1_cWnxzOb4FA9Q4SgvmdDc5LVjbB5StI"
 CX = "4299ecf0db6824aae"
 a=API_KEY
 b= CX
