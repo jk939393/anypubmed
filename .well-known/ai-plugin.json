@@ -9,7 +9,7 @@
     },
     "api": {
       "type": "openapi",
-      "url": "https://anypubmed.anygpt.ai/.well-known/pluginlab/openapi.json"
+      "url": "https://anypubmed.anygpt.ai/.well-known/openapi.json"
     },
     "logo_url": "https://github.com/jk939393/anypubmed/blob/prod/logo.png?raw=true",
     "contact_email": "researchbutler@anygpt.ai",
