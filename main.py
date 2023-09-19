@@ -7,11 +7,13 @@ import os
 import re
 from datetime import datetime
 import httpx
+import random
 
 API_KEY = "AIzaSyB1_cWnxzOb4FA9Q4SgvmdDc5LVjbB5StI"
+API_KEY2 = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
+
 CX = "4299ecf0db6824aae"
-a=API_KEY
-b= CX
+CX2 = "769bcb91a29f24ffa"
 BASE_URL = "https://www.googleapis.com/customsearch/v1/siterestrict"
 
 
@@ -21,7 +23,8 @@ app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.c
 async def get_google_search_results(query, page=1):
     try:
         print(f"Query: {query}")
-
+        random_choice = random.choice([(API_KEY, CX), (API_KEY2, CX2)])
+        a, b = random_choice
         # Calculate the start index for pagination
         page = int(request.args.get('page', 1))
         num = int(request.args.get('results',5))
@@ -54,8 +57,8 @@ async def get_google_search_results(query, page=1):
 
         params = {
             "q": query,
-            "cx": CX,
-            "key": API_KEY,
+            "cx": b,
+            "key": a,
             "num": num,
             "start": start_index,
             "sort": formattedDate
