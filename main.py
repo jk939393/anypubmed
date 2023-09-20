@@ -9,10 +9,10 @@ from datetime import datetime
 import httpx
 import random
 
-API_KEY = "AIzaSyB1_cWnxzOb4FA9Q4SgvmdDc5LVjbB5StI"
+API_KEY = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
 API_KEY2 = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
 
-CX = "4299ecf0db6824aae"
+CX = "769bcb91a29f24ffa"
 CX2 = "769bcb91a29f24ffa"
 BASE_URL = "https://www.googleapis.com/customsearch/v1/siterestrict"
 
