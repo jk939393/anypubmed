@@ -111,7 +111,20 @@ async def get_google_search_results(query, page=1):
         print(f"An error occurred: {e}")
         return quart.Response(f"An error occurred: {e}", status=500)
 
+@app.route("/scrape_url", methods=['POST'])
+async def scrape_url():
+    json_data = await request.json
+    url = json_data.get("url")
 
+    # Fetch the content of the URL
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Extract text from the webpage
+    paragraphs = soup.find_all('p')
+    text_content = [p.get_text() for p in paragraphs]
+
+    return jsonify({"data": text_content}), 200
 
 
 @app.route("/.well-known/ai-plugin.json", methods=['GET'])
