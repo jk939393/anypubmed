@@ -93,3 +93,62 @@ paths:
                           description: A snippet of the search result item.
         '500':
           description: Server error, e.g., the server encountered a situation it doesn't know how to handle, such as an unexpected exception.
+  /scrape_url:
+    post:
+      operationId: scrape_url
+      summary: Scrape the content of a given URL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: The URL of the website to be scraped.
+              required:
+                - url
+              example:
+                url: "https://example.com"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    description: The text content scraped from the website.
+              example:
+                data:
+                  - "This is a paragraph from the website."
+                  - "This is another paragraph from the website."
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Invalid URL provided."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Failed to scrape the website."
+
