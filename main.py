@@ -112,7 +112,7 @@ async def get_google_search_results(query, page=1):
         return quart.Response(f"An error occurred: {e}", status=500)
 
 @app.route("/get_full_abstract", methods=['POST'])
-async def scrape_url():
+async def get_full_abstract():
     json_data = await request.json
     url = json_data.get("url")
 
