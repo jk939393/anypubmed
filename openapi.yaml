@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Google Pubmed Search Plugin
-  description: A plugin that allows the user to perform custom searches with Pubmed.
+  description: A plugin that allows the user to perform custom searches with Pubmed can also scrape full abstracts.
   version: 'v1'
 servers:
   - url: https://anypubmed.anygpt.ai
