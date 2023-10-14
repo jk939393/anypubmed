@@ -6,7 +6,10 @@
   from = "/.well-known/*"
   to = "https://anypubmed-2eb75be592db.herokuapp.com/.well-known/:splat"
   status = 200
-
+[[redirects]]
+  from = "/scrape_url"
+  to = "https://anyppt-823653e4ff36.herokuapp.com/scrape_url"
+  status = 200
 [[headers]]
   for = "/*.yaml"
   [headers.values]
