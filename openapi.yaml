@@ -95,7 +95,7 @@ paths:
           description: Server error, e.g., the server encountered a situation it doesn't know how to handle, such as an unexpected exception.
   /get_full_abstract:
     post:
-      operationId: scrape_url
+      operationId: get_full_abstract
       summary: get the full abstract from one of the links from the search.
       requestBody:
         required: true
