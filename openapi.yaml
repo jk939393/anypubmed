@@ -93,10 +93,10 @@ paths:
                           description: A snippet of the search result item.
         '500':
           description: Server error, e.g., the server encountered a situation it doesn't know how to handle, such as an unexpected exception.
-  /scrape_url:
+  /get_full_abstract:
     post:
       operationId: scrape_url
-      summary: get the full abstract by passing in the link from one item from the list given.
+      summary: get the full abstract from one of the links from the search.
       requestBody:
         required: true
         content:
