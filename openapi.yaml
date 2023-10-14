@@ -96,7 +96,7 @@ paths:
   /scrape_url:
     post:
       operationId: scrape_url
-      summary: Scrape the content of a given URL.
+      summary: get the full abstract by passing in the link from one item from the list given.
       requestBody:
         required: true
         content:
