@@ -92,6 +92,8 @@ async def get_google_search_results(query, page=1):
             })
 
         messages = []
+        messages.append(f"you can get the full abstract by saying get full abstract for a specific number)")
+
         messages.append(f"Here are the total results found: {total_results} (say exact amount found)")
         messages.append(f"This was page {page} (do not forget to say this). Please say 'more' for more results.")
         messages.append(
