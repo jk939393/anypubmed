@@ -1,13 +1,20 @@
 import json
 import quart
 import quart_cors
-from quart import Quart, request, Response, send_file
+from bs4 import BeautifulSoup
+from quart import Quart, request, Response, send_file, jsonify
 import requests
 import os
 import re
 from datetime import datetime
 import httpx
 import random
+#TODO Pubmed dev
+mode ="prod"
+plab_wellknown = "y"
+
+print("pubmed running dev in mode version 10_20_2023")
+
 
 API_KEY = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
 API_KEY2 = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
@@ -27,7 +34,7 @@ async def get_google_search_results(query, page=1):
         a, b = random_choice
         # Calculate the start index for pagination
         page = int(request.args.get('page', 1))
-        num = int(request.args.get('results',5))
+        num = int(request.args.get('results',1))
         # Extract dates from the query using a regular expression
         dates = re.findall(
             r'((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},\s+\d{4}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|\d{4})',
@@ -88,7 +95,7 @@ async def get_google_search_results(query, page=1):
                 "index": start_index + i,
                 "title": item.get('title'),
                 "link": item.get('link'),
-                "snippet": item.get('snippet')
+                "Abstract Summary": item.get('snippet')
             })
 
         messages = []
@@ -98,6 +105,7 @@ async def get_google_search_results(query, page=1):
         messages.append(f"This was page {page} (do not forget to say this). Please say 'more' for more results.")
         messages.append(
             f"You can specify seeing up to {num} results. You are now seeing {min(num, len(result_data))} results.")
+        all_links = [item['link'] for item in result_data]
 
         # Prepare the result JSON
         result = {
@@ -105,7 +113,9 @@ async def get_google_search_results(query, page=1):
             "content": messages,
             "current_page": page,
             "total_results": total_results,
-            "results": result_data
+            "results": result_data,
+            "full_url_list": all_links  # Add this line to include the full URLs
+
         }
 
         return quart.Response(json.dumps(result), status=200, content_type='application/json')
@@ -128,25 +138,34 @@ async def get_full_abstract():
 
     return jsonify({"data": text_content}), 200
 
+if plab_wellknown == "n":
+    print("default well known")
+    @app.get("/.well-known/ai-plugin.json")
+    async def plugin_manifest():
+        host = request.headers['Host']
+        with open("./.well-known/ai-plugin.json") as f:
+            text = f.read()
+            return quart.Response(text, mimetype="text/json")
+else:
+    print("plab well known")
+    @app.route("/.well-known/ai-plugin.json", methods=['GET'])
+    async def plugin_manifest():
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get("https://anypubmed.anygpt.ai/.well-known/ai-plugin.json")
+            print(f"Request headers: {request.headers}")
+            print(f"Current working directory: {os.getcwd()}")
 
-@app.route("/.well-known/ai-plugin.json", methods=['GET'])
-async def plugin_manifest():
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get("https://anypubmed.anygpt.ai/.well-known/ai-plugin.json")
-        print(f"Request headers: {request.headers}")
-        print(f"Current working directory: {os.getcwd()}")
+            print(f"Received response: {response.text}")  # Print the response
 
-        print(f"Received response: {response.text}")  # Print the response
-
-        if response.status_code == 200:
-            json_data = response.text  # Get the JSON as a string
-            return Response(json_data, mimetype="application/json")
-        else:
-            return f"Failed to fetch data. Status code: {response.status_code}", 400
-    except Exception as e:
-        print(f"An error occurred: {e}")  # Print the exception
-        return str(e), 500
+            if response.status_code == 200:
+                json_data = response.text  # Get the JSON as a string
+                return Response(json_data, mimetype="application/json")
+            else:
+                return f"Failed to fetch data. Status code: {response.status_code}", 400
+        except Exception as e:
+            print(f"An error occurred: {e}")  # Print the exception
+            return str(e), 500
 
 @app.get("/logo.png")
 async def plugin_logo():
@@ -156,12 +175,7 @@ async def plugin_logo():
 
 
 
-# @app.get("/.well-known/ai-plugin.json")
-# async def plugin_manifest():
-#     host = request.headers['Host']
-#     with open("./.well-known/ai-plugin.json") as f:
-#         text = f.read()
-#         return quart.Response(text, mimetype="text/json")
+
 
 @app.get("/openapi.yaml")
 async def openapi_spec():
@@ -170,7 +184,14 @@ async def openapi_spec():
         text = f.read()
         return quart.Response(text, mimetype="text/yaml")
 
-port = int(os.environ.get("PORT", 5000))
+if mode == "prod":
+    port = int(os.environ.get("PORT", 5000))
+if mode == "dev":
+    port = 5003
+if port == 5000:
+    print("PROD PORT")
+else:
+    print("DEV PORT")
 
 def main():
     app.run(debug=True, host="0.0.0.0", port=port)
