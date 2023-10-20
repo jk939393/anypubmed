@@ -34,7 +34,7 @@ async def get_google_search_results(query, page=1):
         a, b = random_choice
         # Calculate the start index for pagination
         page = int(request.args.get('page', 1))
-        num = int(request.args.get('results',5))
+        num = int(request.args.get('results',1))
         # Extract dates from the query using a regular expression
         dates = re.findall(
             r'((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},\s+\d{4}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|\d{4})',
@@ -95,7 +95,7 @@ async def get_google_search_results(query, page=1):
                 "index": start_index + i,
                 "title": item.get('title'),
                 "link": item.get('link'),
-                "snippet": item.get('snippet')
+                "Abstract Summary": item.get('snippet')
             })
 
         messages = []
@@ -105,6 +105,7 @@ async def get_google_search_results(query, page=1):
         messages.append(f"This was page {page} (do not forget to say this). Please say 'more' for more results.")
         messages.append(
             f"You can specify seeing up to {num} results. You are now seeing {min(num, len(result_data))} results.")
+        all_links = [item['link'] for item in result_data]
 
         # Prepare the result JSON
         result = {
@@ -112,7 +113,9 @@ async def get_google_search_results(query, page=1):
             "content": messages,
             "current_page": page,
             "total_results": total_results,
-            "results": result_data
+            "results": result_data,
+            "full_url_list": all_links  # Add this line to include the full URLs
+
         }
 
         return quart.Response(json.dumps(result), status=200, content_type='application/json')
