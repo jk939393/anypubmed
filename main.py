@@ -11,6 +11,7 @@ import httpx
 import random
 #TODO Pubmed dev
 mode ="dev"
+plab_wellknown = "n"
 
 print("pubmed running dev in mode version 10_20_2023")
 
@@ -134,25 +135,34 @@ async def get_full_abstract():
 
     return jsonify({"data": text_content}), 200
 
+if plab_wellknown == "n":
+    print("default well known")
+    @app.get("/.well-known/ai-plugin.json")
+    async def plugin_manifest():
+        host = request.headers['Host']
+        with open("./.well-known/ai-plugin.json") as f:
+            text = f.read()
+            return quart.Response(text, mimetype="text/json")
+else:
+    print("plab well known")
+    @app.route("/.well-known/ai-plugin.json", methods=['GET'])
+    async def plugin_manifest():
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get("https://anypubmed.anygpt.ai/.well-known/ai-plugin.json")
+            print(f"Request headers: {request.headers}")
+            print(f"Current working directory: {os.getcwd()}")
 
-@app.route("/.well-known/ai-plugin.json", methods=['GET'])
-async def plugin_manifest():
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get("https://anypubmed.anygpt.ai/.well-known/ai-plugin.json")
-        print(f"Request headers: {request.headers}")
-        print(f"Current working directory: {os.getcwd()}")
+            print(f"Received response: {response.text}")  # Print the response
 
-        print(f"Received response: {response.text}")  # Print the response
-
-        if response.status_code == 200:
-            json_data = response.text  # Get the JSON as a string
-            return Response(json_data, mimetype="application/json")
-        else:
-            return f"Failed to fetch data. Status code: {response.status_code}", 400
-    except Exception as e:
-        print(f"An error occurred: {e}")  # Print the exception
-        return str(e), 500
+            if response.status_code == 200:
+                json_data = response.text  # Get the JSON as a string
+                return Response(json_data, mimetype="application/json")
+            else:
+                return f"Failed to fetch data. Status code: {response.status_code}", 400
+        except Exception as e:
+            print(f"An error occurred: {e}")  # Print the exception
+            return str(e), 500
 
 @app.get("/logo.png")
 async def plugin_logo():
@@ -162,12 +172,7 @@ async def plugin_logo():
 
 
 
-# @app.get("/.well-known/ai-plugin.json")
-# async def plugin_manifest():
-#     host = request.headers['Host']
-#     with open("./.well-known/ai-plugin.json") as f:
-#         text = f.read()
-#         return quart.Response(text, mimetype="text/json")
+
 
 @app.get("/openapi.yaml")
 async def openapi_spec():
@@ -176,10 +181,14 @@ async def openapi_spec():
         text = f.read()
         return quart.Response(text, mimetype="text/yaml")
 
-if mode == "dev":
+if mode == "prod":
     port = int(os.environ.get("PORT", 5000))
-    if mode == "prod":
-        port = 5003
+if mode == "dev":
+    port = 5003
+if port == 5000:
+    print("PROD PORT")
+else:
+    print("DEV PORT")
 
 def main():
     app.run(debug=True, host="0.0.0.0", port=port)
