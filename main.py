@@ -9,6 +9,25 @@ import re
 from datetime import datetime
 import httpx
 import random
+import json
+
+import requests
+from bs4 import BeautifulSoup
+from docx import Document
+import quart_cors
+import quart
+import boto3
+from dotenv import load_dotenv
+load_dotenv()
+import io
+from fpdf import FPDF
+from flask import Flask, request, jsonify
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+import io
+import boto3
 #TODO Pubmed dev
 mode ="dev"
 plab_wellknown = "n"
@@ -26,6 +45,9 @@ BASE_URL = "https://www.googleapis.com/customsearch/v1/siterestrict"
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
 #pubmed
+menu = f"create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf (M) for more results (A) show abstracts only (Q) quanity of results🗂️ or (C) to compare with another url🔗.. do not forget to say this)"
+
+
 @app.route("/google_search/<string:query>", methods=['GET'])
 async def get_google_search_results(query, page=1):
     try:
@@ -112,8 +134,7 @@ async def get_google_search_results(query, page=1):
 
         messages = []
         messages.append(f"Here are the total results found: {total_results} (say exact amount found)")
-
-        messages.append(f"create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)")
+        messages.append(menu)
 
         messages.append(f"This was page {page} (do not forget to say this). Please say 'more' for more results.")
         messages.append(
@@ -136,7 +157,66 @@ async def get_google_search_results(query, page=1):
     except Exception as e:
         print(f"An error occurred: {e}")
         return quart.Response(f"An error occurred: {e}", status=500)
+@app.route("/Step1_make_pdf/<string:query>", methods=['GET'])
+async def generate_data(query):
 
+    data = {
+    "data":query,
+    "assistant_hint":"you must make a preview first of the the pdf. then you ask users if they want to process you cannot skip this step. create a menu with the option to  Preview of PDF File(P) Download pdf now (D)  Set target amount of pages(t)  (L) simply list the files created (R) rename the pds files.  Use and emojis and bold text. you cannot skip this step"
+
+    }
+    return jsonify({"data": data}), 200
+
+
+from quart import request, jsonify
+s3 = boto3.client('s3')
+
+
+@app.route("/Step2_make_pdf", methods=['POST'])
+async def save_to_s3_pdf():
+    include_headers = request.args.get('include_headers', 'false').lower() == 'true'
+
+    json_data = await request.json
+    data_rows = json_data.get("data", [])
+
+    # Create a new PDF document
+    output = io.BytesIO()
+    pdf = SimpleDocTemplate(output, pagesize=letter)
+    styles = getSampleStyleSheet()
+    content = []
+
+    # If headers are included, they should be the first row in the data
+    if include_headers:
+        headers = data_rows.pop(0)
+        content.append(Paragraph(headers, styles['Heading1']))
+
+    # Add each row to the PDF document
+    for row in data_rows:
+        content.append(Paragraph(row, styles['BodyText']))
+
+    pdf.build(content)
+
+    # Reset the buffer position to the beginning
+    output.seek(0)
+
+    # Save the PDF document content to S3
+    bucket_name = 'anycsv'  # Change this to your actual bucket name
+    file_name = "uploaded_data.pdf"
+    s3.put_object(Bucket=bucket_name, Key=file_name, Body=output.read(), ContentType='application/pdf')
+
+    # Generate a presigned URL for the uploaded file
+    url = s3.generate_presigned_url(
+        'get_object',
+        Params={'Bucket': bucket_name, 'Key': file_name},
+        ExpiresIn=3600  # URL will be valid for 1 hour
+    )
+    data = {
+        "role": menu,
+        "assistant": url
+
+    }
+
+    return jsonify({"url": data})
 @app.route("/get_full_abstract", methods=['POST'])
 async def get_full_abstract():
     json_data = await request.json
@@ -151,7 +231,7 @@ async def get_full_abstract():
     text_content = [p.get_text() for p in paragraphs]
     result = {
         "role": "this must scrape the url just passed in by the user, then must activate the full abstract, unless in compare mode where you summaize later",
-        "role1": "You then must show this menu create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)",
+        "role1": menu,
         "assistant": text_content
 
     }
@@ -170,7 +250,7 @@ async def compare_url():
     text_content = [p.get_text() for p in paragraphs]
     result = {
             "role": "this must scrape the url just passed in by the user, then must activate the full abstract, then compare both",
-            "role":"You then must show this menu create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) 📝for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)",
+            "role":menu,
             "assistant":text_content
 
 

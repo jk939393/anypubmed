@@ -34,7 +34,7 @@ paths:
             minimum: 1
             maximum: 5
           required: false
-          description: The page number to fetch results for, with each page containing up to 5 results.
+          description: The page number to fetch results for, with each page containing up to 8 results.
         - in: query
           name: start_date
           schema:
@@ -210,3 +210,64 @@ paths:
               example:
                 error: "Failed to scrape the website."
 
+  /Step1_make_pdf/{query}:
+    get:
+      operationId: generate_data
+      summary: Retrieve data from any previous items  and make neat before the next method which makes pdf.
+      parameters:
+        - in: path
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The query and data are fetched.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  data: [ ]
+  /Step2_make_pdf:
+    post:
+      operationId: save_to_s3_pdf  # Reflects that this operation saves a PDF to S3
+      summary: Convert data to PDF document using ReportLab and save to S3.  # Optionally mention ReportLab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: string
+              example:
+                data: [ "item1", "item2", "item3" ]
+      parameters:
+        - in: query
+          name: include_headers
+          schema:
+            type: boolean
+            default: true
+          description: Whether to include headers in the generated PDF document.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+              example:
+                url: "https://s3.example.com/uploaded_data.pdf"  # File extension updated to .pdf
