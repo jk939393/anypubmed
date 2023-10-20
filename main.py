@@ -85,23 +85,36 @@ async def get_google_search_results(query, page=1):
             return quart.Response(response.text, status=response.status_code)
 
         data = response.json()
+        print(response.json())
 
         # Print total results
         total_results = data.get('searchInformation', {}).get('totalResults', 0)
 
         result_data = []
         for i, item in enumerate(data.get('items', [])):
+            pagemap = item.get('pagemap', {})
+            metatags = pagemap.get('metatags', [{}])[0]
+
             result_data.append({
                 "index": start_index + i,
                 "title": item.get('title'),
                 "link": item.get('link'),
-                "Abstract Summary": item.get('snippet')
+                "Abstract Summary": item.get('snippet'),
+                "Publication Date": metatags.get('citation_publication_date'),
+                "Journal": metatags.get('citation_journal_title'),
+                "Authors": metatags.get('citation_author'),
+                "DOI or PMID": metatags.get('uid'),
+                "Keywords": metatags.get('citation_keywords'),
+                "Volume": metatags.get('citation_volume'),
+                "Issue": metatags.get('citation_issue'),
+                "Publisher": metatags.get('citation_publisher')
             })
 
         messages = []
-        messages.append(f"you can get the full abstract by saying get full abstract for a specific number. do not forget to say this)")
-
         messages.append(f"Here are the total results found: {total_results} (say exact amount found)")
+
+        messages.append(f"create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)")
+
         messages.append(f"This was page {page} (do not forget to say this). Please say 'more' for more results.")
         messages.append(
             f"You can specify seeing up to {num} results. You are now seeing {min(num, len(result_data))} results.")
@@ -110,6 +123,7 @@ async def get_google_search_results(query, page=1):
         # Prepare the result JSON
         result = {
             "role": "assistant",
+            "assistant":"you must show all the categories or attributes collected.you cannot ignore this",
             "content": messages,
             "current_page": page,
             "total_results": total_results,
@@ -137,6 +151,26 @@ async def get_full_abstract():
     text_content = [p.get_text() for p in paragraphs]
 
     return jsonify({"data": text_content}), 200
+@app.route("/compare", methods=['POST'])
+async def compare_url():
+    json_data = await request.json
+    url = json_data.get("url")
+
+    # Fetch the content of the URL
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Extract text from the webpage
+    paragraphs = soup.find_all('p')
+    text_content = [p.get_text() for p in paragraphs]
+    result = {
+            "role": "this must scrape the url just passed in by the user, then must activate the full abstract, then compare both",
+            "assistant":text_content
+
+
+        }
+
+    return jsonify({"data": result}), 200
 
 if plab_wellknown == "n":
     print("default well known")

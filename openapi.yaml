@@ -96,7 +96,65 @@ paths:
   /get_full_abstract:
     post:
       operationId: get_full_abstract
-      summary: get the full abstract from one of the links from the search.
+      summary: get the full abstract from one of the links from the search. If this is activated by the compare function, we just want to summmarize and compare .
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: The URL of the website to be scraped.
+              required:
+                - url
+              example:
+                url: "https://example.com"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    description: The text content scraped from the website.
+              example:
+                data:
+                  - "This is a paragraph from the website."
+                  - "This is another paragraph from the website."
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Invalid URL provided."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Failed to scrape the website."
+  /compare:
+    post:
+      operationId: compare_url
+      summary: scrape the url passed in by the user and then active the full abstract method. then summarize both and do a compare.
       requestBody:
         required: true
         content:
