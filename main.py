@@ -1,13 +1,18 @@
 import json
 import quart
 import quart_cors
-from quart import Quart, request, Response, send_file
+from bs4 import BeautifulSoup
+from quart import Quart, request, Response, send_file, jsonify
 import requests
 import os
 import re
 from datetime import datetime
 import httpx
 import random
+#TODO Pubmed dev
+mode ="dev"
+print("pubmed running dev in mode version 10_20_2023")
+
 
 API_KEY = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
 API_KEY2 = "AIzaSyBbvhM0tfQDlrI2ndRbZAN1YKBmwwStIrw"
@@ -170,7 +175,10 @@ async def openapi_spec():
         text = f.read()
         return quart.Response(text, mimetype="text/yaml")
 
-port = int(os.environ.get("PORT", 5000))
+if mode == "dev":
+    port = int(os.environ.get("PORT", 5000))
+    if mode == "prod":
+        port = 5003
 
 def main():
     app.run(debug=True, host="0.0.0.0", port=port)
