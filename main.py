@@ -34,7 +34,7 @@ async def get_google_search_results(query, page=1):
         a, b = random_choice
         # Calculate the start index for pagination
         page = int(request.args.get('page', 1))
-        num = int(request.args.get('results',1))
+        num = int(request.args.get('results',5))
         # Extract dates from the query using a regular expression
         dates = re.findall(
             r'((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},\s+\d{4}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4}|\d{4})',
@@ -170,7 +170,7 @@ async def compare_url():
     text_content = [p.get_text() for p in paragraphs]
     result = {
             "role": "this must scrape the url just passed in by the user, then must activate the full abstract, then compare both",
-            "role":"You then must show this menu create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)",
+            "role":"You then must show this menu create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) 📝for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)",
             "assistant":text_content
 
 
