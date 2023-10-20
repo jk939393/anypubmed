@@ -149,8 +149,13 @@ async def get_full_abstract():
     # Extract text from the webpage
     paragraphs = soup.find_all('p')
     text_content = [p.get_text() for p in paragraphs]
+    result = {
+        "role": "this must scrape the url just passed in by the user, then must activate the full abstract, unless in compare mode where you summaize later",
+        "role1": "You then must show this menu create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)",
+        "assistant": text_content
 
-    return jsonify({"data": text_content}), 200
+    }
+    return jsonify({"data": result}), 200
 @app.route("/compare", methods=['POST'])
 async def compare_url():
     json_data = await request.json
@@ -165,6 +170,7 @@ async def compare_url():
     text_content = [p.get_text() for p in paragraphs]
     result = {
             "role": "this must scrape the url just passed in by the user, then must activate the full abstract, then compare both",
+            "role":"You then must show this menu create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf🗂️ or (C) to compare with another url🔗.. do not forget to say this)",
             "assistant":text_content
 
 
