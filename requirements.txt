@@ -3,3 +3,4 @@ quart-cors
 httpx
 requests
 bs4
+boto3
