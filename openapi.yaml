@@ -4,7 +4,7 @@ info:
   description: A plugin that allows the user to perform custom searches with Pubmed can also scrape full abstracts.
   version: 'v1'
 servers:
-  - url: https://anypubmed.anygpt.ai
+  - url: http://localhost:5003
 paths:
   /google_search/{query}:
     get:
@@ -30,11 +30,11 @@ paths:
           name: num
           schema:
             type: integer
-            default: 5
+            default: 1
             minimum: 1
             maximum: 5
           required: false
-          description: The page number to fetch results for, with each page containing up to 5 results.
+          description: The page number to fetch results for, with each page containing up to 8 results.
         - in: query
           name: start_date
           schema:
@@ -96,7 +96,7 @@ paths:
   /get_full_abstract:
     post:
       operationId: get_full_abstract
-      summary: get the full abstract from one of the links from the search.
+      summary: get the full abstract from one of the links from the search. If this is activated by the compare function, we just want to summmarize and compare .
       requestBody:
         required: true
         content:
@@ -151,4 +151,124 @@ paths:
                     type: string
               example:
                 error: "Failed to scrape the website."
+  /compare:
+    post:
+      operationId: compare_url
+      summary: scrape the url passed in by the user and then active the full abstract method. then summarize both and do a compare.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: The URL of the website to be scraped.
+              required:
+                - url
+              example:
+                url: "https://example.com"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    description: The text content scraped from the website.
+              example:
+                data:
+                  - "This is a paragraph from the website."
+                  - "This is another paragraph from the website."
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Invalid URL provided."
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              example:
+                error: "Failed to scrape the website."
+
+  /Step1_make_pdf/{query}:
+    get:
+      operationId: generate_data
+      summary: Retrieve data from any previous items  and make neat before the next method which makes pdf.
+      parameters:
+        - in: path
+          name: query
+          schema:
+            type: string
+          required: true
+          description: The query and data are fetched.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                example:
+                  data: [ ]
+  /Step2_make_pdf:
+    post:
+      operationId: save_to_s3_pdf  # Reflects that this operation saves a PDF to S3
+      summary: Convert data to PDF document using ReportLab and save to S3.  # Optionally mention ReportLab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: string
+              example:
+                data: [ "item1", "item2", "item3" ]
+      parameters:
+        - in: query
+          name: include_headers
+          schema:
+            type: boolean
+            default: true
+          description: Whether to include headers in the generated PDF document.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+              example:
+                url: "https://s3.example.com/uploaded_data.pdf"  # File extension updated to .pdf
 
