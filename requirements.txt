@@ -4,3 +4,4 @@ httpx
 requests
 bs4
 boto3
+dotenv
