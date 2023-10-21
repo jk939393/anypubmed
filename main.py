@@ -13,7 +13,6 @@ import json
 
 import requests
 from bs4 import BeautifulSoup
-from docx import Document
 import quart_cors
 import quart
 import boto3
