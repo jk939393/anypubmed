@@ -5,3 +5,4 @@ requests
 bs4
 boto3
 python-dotenv
+fpdf
