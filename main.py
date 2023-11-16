@@ -303,14 +303,7 @@ async def openapi_spec():
         text = f.read()
         return quart.Response(text, mimetype="text/yaml")
 
-if mode == "prod":
-    port = int(os.environ.get("PORT", 5000))
-if mode == "dev":
-    port = 5003
-if port == 5000:
-    print("PROD PORT")
-else:
-    print("DEV PORT")
+port = int(os.environ.get("PORT", 5000))
 
 def main():
     app.run(debug=True, host="0.0.0.0", port=port)
