@@ -2,3 +2,8 @@ quart
 quart-cors
 httpx
 requests
+bs4
+boto3
+python-dotenv
+fpdf
+reportlab
