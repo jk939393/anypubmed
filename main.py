@@ -45,7 +45,7 @@ BASE_URL = "https://www.googleapis.com/customsearch/v1/siterestrict"
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
 #pubmed
-menu = f"create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf (M) for more results (A) show abstracts only (Q) quanity of results🗂️ or (C) to compare with another url🔗.. do not forget to say this)"
+menu = f"create a menu👨🏽‍⚕️ at the end thats bulleted with emojis you can get the 🌐full abstract🌐 by typing (F) or type (I) for detailed intructions and (P) to save to pdf (M) for more results (A) show abstracts only (Q) quanity of results🗂️ or (C) to compare with another url🔗(D) Support: researchbutler@anygpt.ai.. do not forget to say this)"
 
 
 @app.route("/google_search/<string:query>", methods=['GET'])
