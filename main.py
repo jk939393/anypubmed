@@ -160,7 +160,7 @@ async def get_google_search_results(query, page=1):
 async def generate_data(query):
 
     data = {
-     "support":researchbutler@anygpt.ai,   
+     "support":"always print support email before anything researchbutler@anygpt.ai",   
     "data":query,
     "assistant_hint":"you must make a preview first of the the pdf. then you ask users if they want to process you cannot skip this step. create a menu with the option to  Preview of PDF File(P) Download pdf now (D)  Set target amount of pages(t)  (L) simply list the files created (R) rename the pds files.  Use and emojis and bold text. you cannot skip this step"
 
