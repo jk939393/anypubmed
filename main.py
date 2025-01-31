@@ -98,10 +98,29 @@ async def openapi_spec():
     except FileNotFoundError:
         return Response("openapi.yaml not found", status=404)
 
-# Optionally serve your plugin manifest if needed
-# @app.route("/.well-known/ai-plugin.json", methods=["GET"])
-# async def plugin_manifest():
-#     ... load or generate your plugin JSON ...
+@app.route("/.well-known/ai-plugin.json", methods=['GET'])
+async def plugin_manifest():
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get("https://anypubmed.anygpt.ai/.well-known/ai-plugin.json")
+        print(f"Request headers: {request.headers}")
+        print(f"Current working directory: {os.getcwd()}")
+
+        print(f"Received response: {response.text}")  # Print the response
+
+        if response.status_code == 200:
+            json_data = response.text  # Get the JSON as a string
+            return Response(json_data, mimetype="application/json")
+        else:
+            return f"Failed to fetch data. Status code: {response.status_code}", 400
+    except Exception as e:
+        print(f"An error occurred: {e}")  # Print the exception
+        return str(e), 500
+
+@app.get("/logo.png")
+async def plugin_logo():
+    filename = 'logo.png'
+    return await quart.send_file(filename, mimetype='image/png')
 
 def main():
     port = int(os.environ.get("PORT", 5000))
