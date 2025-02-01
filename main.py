@@ -16,7 +16,7 @@ SERVING_CONFIG_ID = os.getenv("SERVING_CONFIG_ID", "default_search")
 # For authentication, you might store a short-lived token or
 # a service account key. If you have a service account,
 # you'd typically use google.auth, but here's a basic approach:
-ACCESS_TOKEN = os.getenv("DISCOVERY_ACCESS_TOKEN", "ya29.a0AXeO80TC7NV0clXgjDAAT9XtumGsFEwOPMM9I1R6C8U8KeIIbvgfHmUwQMMaQOlkklrLrs8KcBXe742tCb1mc9H9dh9Yjv_2ypniTjxETpbJh_goyVvj2f9lkXDhY-xyxwzKFzwcajvyY2cO7XbEE0Ac753GdOhGImoz_PfJaCgYKAdMSARMSFQHGX2MijrqpNZgvKNjS5V1kwNQllw0175")
+ACCESS_TOKEN = os.getenv("DISCOVERY_ACCESS_TOKEN", "ya29.a0AXeO80Tuu5VZFGrMRNuVc7t44fGQzkxm-aem0zEqNZzdyDXQX02Png8_5xD-zrCb2NnHvWo60aDOgCpofN5orFsSBtlYqGOM1xyGJaQq_C_Nk_8mH89s656P_VJT6CLOVT032cwx3dHs8qaLERSZqA--k2ry9pTdRif3Ehkvk3MAlRv_b8yd2fUhqsbG6HD6tgvnTevCRbh-J_AvrusDz-4uzQ6WlSu3eWxVmRcvhiN-qzHYI0BM_qjA4_p8R1IqYmBAeCvRMjGqfqjOHRJzeheyg7tv58NG2xrK8OoKToJqsS3yCne3ptCQ5x8At7clXeNaPrYat_kLTChDhf6b8cmEZQ4qP85UvTJR5EikPkzZlToA5I848HKIJUuUTBIvhZ3Rie2f4fbPwSnEHP18YIFk-bCHcv_Tgg-caCgYKARISARMSFQHGX2Mi2x9GZ-ChQMuSDHc8at0Ikg0427")
 
 # Build the Discovery Engine servingConfigs endpoint
 DISCOVERY_ENDPOINT = (
