@@ -67,7 +67,7 @@ async def get_full_abstract():
     """
     POST /get_full_abstract
     Expects JSON body with { "url": "..." }.
-    Fetches the URL's HTML and returns extracted text paragraphs.
+    Fetches a PubMed page and tries to extract the actual abstract text.
     """
     try:
         body = await request.get_json()
@@ -75,15 +75,31 @@ async def get_full_abstract():
         if not url:
             return jsonify({"error": "No URL provided"}), 400
 
-        # Simple fetch (no advanced parsing)
+        # Fetch the HTML
         resp = requests.get(url)
         if resp.status_code != 200:
-            return jsonify({"error": f"Failed to retrieve URL: {resp.status_code}"}), 400
+            return jsonify({"error": f"Failed to retrieve URL: {resp.status_code}"}), resp.status_code
 
-        # Very basic 'paragraph' extraction
-        text_lines = resp.text.split("\n")
+        soup = BeautifulSoup(resp.text, "html.parser")
 
-        return jsonify({"data": text_lines}), 200
+        # 1) Primary approach: look for <meta name="citation_abstract" content="...">
+        meta_abstract = soup.find("meta", attrs={"name": "citation_abstract"})
+        if meta_abstract and meta_abstract.get("content"):
+            return jsonify({"abstract": meta_abstract["content"].strip()}), 200
+
+        # 2) Fallback: search for a <div> with 'abstract' class or id
+        abstract_div = soup.find("div", class_="abstract") or soup.find("div", id="abstract")
+        if abstract_div:
+            paragraphs = abstract_div.find_all("p")
+            text_parts = [p.get_text(strip=True) for p in paragraphs if p.get_text(strip=True)]
+            if text_parts:
+                # Join all paragraphs with line breaks
+                full_abstract = "\n\n".join(text_parts)
+                return jsonify({"abstract": full_abstract}), 200
+
+        # If we reached here, no recognizable abstract
+        return jsonify({"abstract": "No recognizable abstract found on the page."}), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
