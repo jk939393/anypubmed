@@ -4,6 +4,7 @@ import quart
 import quart_cors
 from quart import request, jsonify, Response
 import requests
+from bs4 import BeautifulSoup
 
 app = quart_cors.cors(quart.Quart(__name__), allow_origin="https://chat.openai.com")
 
