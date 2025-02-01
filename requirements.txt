@@ -2,3 +2,4 @@ quart
 quart-cors
 httpx
 requests
+beautifulsoup4
